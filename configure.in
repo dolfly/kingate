@@ -1,0 +1,156 @@
+# Process this file with autoconf to produce a configure script.
+AC_INIT(src/main.cpp)
+AC_CANONICAL_SYSTEM
+AM_INIT_AUTOMAKE(kingate,2.2)
+#AC_CONFIG_SRCDIR([src/allow_connect.cpp])
+#AC_CANONICAL_SYSTEM
+AM_CONFIG_HEADER([src/config.h])
+
+# Checks for programs.
+AC_PROG_CXX
+AC_PROG_MAKE_SET
+
+# Checks for libraries.
+
+# Checks for header files.
+test "$prefix" = "NONE" && prefix=/usr/local
+
+AC_LANG(C++) 
+AC_C_INLINE
+
+LIBS="-lpthread "
+AC_HEADER_STDC
+AC_HEADER_SYS_WAIT
+AC_CHECK_HEADERS([arpa/inet.h fcntl.h inttypes.h locale.h netdb.h netinet/in.h stdlib.h string.h strings.h sys/file.h sys/ioctl.h sys/socket.h sys/time.h syslog.h unistd.h zlib.h])
+AH_TEMPLATE([HAVE_SOCKLEN_T],[define if it have socklen_t])
+AH_TEMPLATE([HAVE_ULONG],[define if it have u_long])
+
+AH_TEMPLATE([HAVE_DLFCN_H],[define if it have dlfcn.h include])
+AH_TEMPLATE([CMD_FILE],[define cmd file])
+AH_TEMPLATE([KINGATE_PATH],[define kingate path])
+AH_TEMPLATE([CTIME_R_3],[define ctime_r])
+
+AH_TEMPLATE([DISABLE_USER],[disable user support])
+AH_TEMPLATE([CONTENT_FILTER],[enable content filter])
+#AH_TEMPLATE([DISABLE_TIME_CHECK],[disable access base time])
+#AH_TEMPLATE([DISABLE_HTTP],[disable http proxy support])
+#AH_TEMPLATE([DISABLE_SOCKS],[disable socks proxy support])
+#AH_TEMPLATE([DISABLE_FTP],[disable ftp proxy support])
+#AH_TEMPLATE([DISABLE_POP3],[disable pop3 proxy support])
+#AH_TEMPLATE([DISABLE_SMTP],[disable smtp proxy support])
+#AH_TEMPLATE([DISABLE_TELNET],[disable telnet proxy support])
+#AH_TEMPLATE([DISABLE_MMS],[disable mms proxy support])
+#AH_TEMPLATE([DISABLE_RTSP],[disable rtsp proxy support])
+#AH_TEMPLATE([DISABLE_REDIRECT],[disable tcp port redirect support])
+
+#AH_TEMPLATE([ONLY_HTTP],[only compiled http proxy])
+AC_CHECK_HEADERS([sstream])
+# Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_TYPE_UID_T
+AC_C_INLINE
+AC_TYPE_PID_T
+AC_TYPE_SIZE_T
+AC_HEADER_TIME
+AC_STRUCT_TM
+
+AC_MSG_CHECKING(for ctime_r have len)
+AC_TRY_COMPILE([
+#include <time.h>
+],[
+     const time_t *timep;
+     char *buf;
+     ctime_r(timep,buf,3);
+],[
+AC_DEFINE(CTIME_R_3,1) AC_MSG_RESULT(yes)
+],[AC_MSG_RESULT(no)])
+
+
+
+AC_MSG_CHECKING(for socklen_t)
+AC_TRY_COMPILE([
+#include        <stdio.h>
+#include        <stdlib.h>
+#include        <signal.h>
+#include        <sys/types.h>
+#include        <sys/socket.h>
+#include        <netinet/in.h>
+],[
+socklen_t       test;],[
+AC_DEFINE(HAVE_SOCKLEN_T,1) AC_MSG_RESULT(yes)
+],[AC_MSG_RESULT(no)])
+
+AC_MSG_CHECKING(for u_long)
+AC_TRY_COMPILE([
+#define _XOPEN_SOURCE 500
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+],[
+int       test;],[
+AC_DEFINE(HAVE_ULONG,1) AC_MSG_RESULT(yes)
+],[AC_MSG_RESULT(no)])
+
+AC_DEFINE_UNQUOTED(CMD_FILE,"${prefix}/var/kingate.cmd")
+AC_DEFINE_UNQUOTED(KINGATE_PATH,"${prefix}")
+# Checks for library functions.
+#AC_ARG_ENABLE([http],AC_HELP_STRING([--disable-http],[disable http proxy support default supported]),[AC_DEFINE(DISABLE_HTTP,1)],[])
+#AC_ARG_ENABLE([socks],AC_HELP_STRING([--disable-socks],[disable socks proxy support default supported]),[AC_DEFINE(DISABLE_SOCKS,1)],[])
+#AC_ARG_ENABLE([ftp],AC_HELP_STRING([--disable-ftp],[disable ftp proxy support default supported]),[AC_DEFINE(DISABLE_FTP,1)],[])
+#AC_ARG_ENABLE([pop3],AC_HELP_STRING([--disable-pop3],[disable pop3 proxy support default supported]),[AC_DEFINE(DISABLE_POP3,1)],[])
+#AC_ARG_ENABLE([smtp],AC_HELP_STRING([--disable-smtp],[disable smtp proxy support default supported]),[AC_DEFINE(DISABLE_SMTP,1)],[])
+#AC_ARG_ENABLE([mms],AC_HELP_STRING([--disable-mms],[disable mms proxy support default supported]),[AC_DEFINE(DISABLE_MMS,1)],[])
+#AC_ARG_ENABLE([rtsp],AC_HELP_STRING([--disable-rtsp],[disable rtsp proxy support default supported]),[AC_DEFINE(DISABLE_RTSP,1)],[])
+#AC_ARG_ENABLE([telnet],AC_HELP_STRING([--disable-telnet],[disable telnet proxy support default supported]),[AC_DEFINE(DISABLE_TELNET,1)],[])
+#AC_ARG_ENABLE([redirect],AC_HELP_STRING([--disable-redirect],[disable tcp port redirect support default supported]),[AC_DEFINE(DISABLE_REDIRECT,1)],[])
+AC_ARG_ENABLE([user],AC_HELP_STRING([--disable-user],[disable user support default supported]),[AC_DEFINE(DISABLE_USER,1)],[])
+AC_ARG_ENABLE([content-filter],AC_HELP_STRING([--enable-content-filter],[enable content filter default not supported]),[AC_DEFINE(CONTENT_FILTER,1)],[])
+#AC_ARG_ENABLE([time],AC_HELP_STRING([--disable-time-check],[disable access base time ,default enable]),[AC_DEFINE(DISABLE_TIME_CHECK,1)],[])
+#AC_ARG_ENABLE([only-http],AC_HELP_STRING([--enable-only-http],[only compiled http proxy]),[AC_DEFINE(ONLY_HTTP,1)],[])
+#AC_FUNC_FORK
+#AC_PROG_GCC_TRADITIONAL
+#AC_FUNC_MALLOC
+AC_FUNC_MEMCMP
+AC_FUNC_MKTIME
+#AC_TYPE_SIGNAL
+AC_FUNC_STRERROR_R
+AC_FUNC_VPRINTF
+AC_FUNC_WAIT3
+AC_CHECK_FUNCS([gethostbyname_r gettimeofday inet_ntoa localtime_r memchr memset select socket strcasecmp strchr strdup strncasecmp strrchr strstr strtol ctime_r daemon])
+case "$host_os" in
+linux*)
+	 CXXFLAGS="-g -O0 -D_REENTRANT -DLINUX"
+	;;
+netbsd*)
+	CXXFLAGS="$CXXFLAGS `pthread-config --cflags`"
+        LDFLAGS="$LDFLAGS `pthread-config --ldflags`"
+        LIBS="`pthread-config --libs`"
+	;;
+freebsd*) 
+	  CXX=g++
+          if test "X$LIBGB_NAME" != "X" ; then
+                LIBGB_NAME="$LIBGB_NAME -lstdc++"
+          fi
+          ;;
+solaris*) CXXFLAGS="$CXXFLAGS -D_REENTRANT -DSOLARIS"
+          if test "X$LIBDB_REAL_PATH" != "X" ; then
+                LIBDB_NAME="-R$LIBDB_REAL_PATH $LIBDB_NAME"
+          fi
+          LIBS="-lm -ly -lthread -ll $LIBS -lsocket -lnsl $LIBDB_PATH $LIBDB_NAME"
+          if test "$large_files" = "yes" ; then
+                CFLAGS="$CFLAGS -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -DWITH_LARGE_FILES"
+          fi
+          ;;
+
+hpux*)
+	 CXXFLAGS="-D_REENTRANT -DHPUX"
+	;;
+openbsd*)
+	 LIBS="-lpthread"
+	;;
+esac
+
+AC_OUTPUT([
+Makefile
+src/Makefile
+])

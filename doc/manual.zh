@@ -1,0 +1,103 @@
+kingate管理
+kingate从1.5版开始远程管理使用单独的端口来管理。我们有了远程管理可以动态改变控制规则，用户及用户组的管理。相信这个功能会越来越强大的。
+只要http代理或者manage端口打开了，远程管理功能就可以了，在access.conf文件里面记得要允许manage管理访问哦，像下面一样就打开了（只允许本机使用管理功能,service写manage，用户组写*,就表示这条规则是管理的了);
+first deny
+model deny
+{ manage * !127.0.0.1 * }
+model allow
+{ * * * * }
+
+1。进入http管理
+打开浏览器（如IE或Mozilla)，在地址栏中输入：http://kingate代理服务器IP地址:manage代理端口/
+manage端口由kingate.conf里面的manage_port指定，并在kingate.conf指定manage on
+就可以了。初始root的密码是kingate，
+注意：这里一定要写kingate代理服务的IP地址，不可以写域名啊或localhost之类的。比如在kingate装在本机manage端口是2222就输入：http://127.0.0.1:2222/
+不能写:http://localhost:2222/
+
+2。进入之后就可以看到一些链接.
+logout			-->>	退出登录
+chanage password	-->>	更改自已的密码
+---------------------------------------------------
+如果是root登录的话，你还可以看到以下链接：
+
+users			-->>	kingate的用户管理
+login users		-->>	查看当前登录用户情况
+access			-->>	管理kingate的访问控制
+info			-->>	查看kingate的运行信息
+config			-->>	配置kingate(注意：这里更改后kingate要重起才能生效)
+
+3.kingate的部分文件
+
+prefix/bin/kingate		kingate主程序(windows版本就是kingate.exe)
+prefix/bin/dnsproxy		kingate的dns代理程序(windows版本就是dnsproxy.exe)
+prefix/var/kingate.log		kingate的日志文件(要求kingate运行用户有读写权限)
+prefix/etc/kingate.conf		kingate的配置文件(如果用http管理的话，则要求kingate运行用户有读写权限,否则只要读权限)
+prefix/etc/kingate.user		kingate的用户文件(要求kingate运行用户有读写权限)
+prefix/etc/access.conf		kingate的访问控制文件(如果用http管理的话，则要求kingate运行用户有读写权限,否则只要读权限)
+prefix/etc/kingate.pid		保存kingate的pid的文件(windows版本没有,要求kingate运行用户有读写权限)
+
+prefix就是kingate的主目录.
+
+4.kingate访问控制。
+kingate的访问控制可以通过http管理进行修改，也可以通过直接编辑access.conf文件，两者的区别就是直接编辑access.conf文件，kingate需要重起才能生效，而通过http管理则不用重起就能生效。
+kingate的访问控制分为两类规则，一类是allow(允许)规则，另一类是是deny(拒绝)规则。还有一个first来指定的第一规则(即优先级较高的).
+kingate对一个请求首先在第一规则查找，如果找到，就按第一规则进行处理。
+第一规则中没有找到，kingate在另一规则中查找，如果找到按第二规则进行处理。
+如果该请求在两者中都没能找到，kingate就按第一规则进行处理。
+
+一个规则由以下各项组成：
+{ rule } { time }
+该规则有效时间由time指定，如果没有time，表示所有时间，time格式见下面。
+
+rule格式:
+[!]service [!]group [!]src_ip[/src_mask]  [!]dst_ip[/dst_mask][:dst_port]
+详细说明
+*表示所有。
+!表示取反，例service为 !http 表示除http服务之外.
+注意：!和*不可以同时使用，如果同时使用会发生意想不到结果。以下同。
+
+service可以为名字:http,socks,ftp,....
+也可以写端口，如：8082,1082,...
+
+group为用户组名称.
+*表示所有的用户和非用户。
+all表示所有的用户。
+
+src_ip表示源地址,如果以"."结尾表示是一个网络。*表示所有的源地址.
+src_mask源地址掩码，可以是255.255...的形式，也可以是数字像iptables的形式.如果src_ip为一个IP，src_mask就不要写。
+
+dst_ip目的地址，格式和src_ip一样。
+dst_mask目的地址掩码，格式和src_mask一样.
+dst_port目的端口。如果不写则表示所有端口。
+
+注意：src_mask,dst_mask,dst_port不可以和取反"!"一起使用.
+
+time格式：
+分 时 日 月 星期
+格式同crontab一样(星期日是0)
+例：
+* 8-10 * * 6,0
+表示:星期六星期日的8点到10点。
+
+5.access.conf文件格式：
+first	allow|deny
+model allow
+{ rule } { time }
+...
+model deny
+{ rule } { time }
+
+6.access.conf文件举例：
+a:实现kingate的匿名代理：
+first deny
+model deny
+{ manage * !127.0.0.1 * }
+model allow
+{ * * * * }
+
+b:实现kingate用户认证代理(记得一定要更改kingate的root密码哦)
+first deny
+model deny
+model allow
+{ * all * * }
+{ manage * * * }

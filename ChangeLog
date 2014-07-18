@@ -1,0 +1,7 @@
+visit http://sourceforge.net/projects/kingate/ to obain all kingate ChangeLog
+V1.6
+1.fix bugs version.
+2.fix a bug that force close a establish connection,kingate will core dump.
+
+
+

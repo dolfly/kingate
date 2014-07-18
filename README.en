@@ -1,0 +1,13 @@
+	kingate readme(English version)
+kingate is a proxy like wingate ,support http,https,socks,pop3,smtp,telnet,ftp,mms,rtsp proxy.
+
+1 Install
+please Read the INSTALL file
+
+2 Usage:
+ run  prefix/bin/kingate -h  to obtain kingate's usage.
+
+3 kingate maunal 
+please Read doc/maunal.en file
+
+

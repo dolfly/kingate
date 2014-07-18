@@ -1,0 +1,38 @@
+1:download kingate
+	visit http://sourceforge.net/projects/kingate/ to obtain kingate
+
+if kingate version not is windows	
+	2:extract
+	tar xzf kingate-xxx.tar.gz
+	cd kingate-xxx
+
+	3:install
+	./configure --help to obtain configure help
+	./configure --prefix=prefix
+	make
+	make install
+
+	4:start kingate
+	if you first run kingate use command:
+	prefix/bin/kingate -z to create and format the disk cache
+	prefix/bin/kingate	to start the kingate
+	prefix/bin/kingate -q	to stop the kingate
+if kingate versiotn is windows
+	2:extract
+	use winrar or winzip tools to extract.
+
+	3:install
+	c:\>prefix\bin\kingate --install
+	c:\>prefix\bin\kingate -z
+	
+	4:uninstall
+	c:\>prefix\bin\kingate --uninstall
+
+	5:start kingate
+	c:\>net start kingate
+
+	6:stop kingate
+	c:\>net stop kingate
+	
+	7:about dnsproxy
+	c:\>prefix\bin\dnsproxy.exe -h use_dns_host -b bindaddr -m max_thread

@@ -1,0 +1,96 @@
+kingate manage
+kingate start from version 1.5 use a manage port to manage the kingate.
+open the kingate http proxy or manage proxy then you can use the kingate manage.
+you must add allow rule in access.conf file to allow the http manage access(service is manage and group is * ).
+for example:
+
+first deny
+model deny
+{ manage * !127.0.0.1 * }
+model allow
+{ * * * * }
+
+1.Enter kingate manage
+Open the url http://kingate_proxy_ip:manage_port/	in your browser(such as IE Mozilla...)
+default "root" password is "kingate"
+
+2¡£manage the kingate
+after login the kingate,you can see the following link.
+logout			-->>	logout the kingate
+chanage password	-->>	chanage youself password
+---------------------------------------------------
+if you login as root you can see the folloing link.
+
+users			-->>	kingate's users manage
+login users		-->>	about kingate login users information
+access			-->>	manage the kingate access control
+info			-->>	look up the kingate running infomation
+config			-->>	config the kingate(alert:you must reboot the kingate to use the new config)
+
+3.some file of kingate
+
+prefix/bin/kingate		kingate program(version of windows is kingate.exe)
+prefix/bin/dnsproxy		kingate dns proxy program(version of windows is dnsproxy.exe)
+prefix/var/kingate.log		kingate log file(user running by kingate must can write and read the file)
+prefix/etc/kingate.conf		kingate config file(user running by kingate must can write and read the file)
+prefix/etc/kingate.user		file of saving kingate's user(user running by kingate must can write and read the file)
+prefix/etc/access.conf		kingate access control file(user running by kingate must can write and read the file)
+prefix/etc/kingate.pid		file of saving kingate's pid(user running by kingate must can write and read the file)
+
+prefix is the directory that kingate install
+
+
+access.conf file format
+#kingate access file by sort two model,one is allow ,another is deny ,one rule is deal with the following order.
+#when the rule in the first model,the rule deal by the first model.
+#the rule isn't the first model. kingate will find in the another model ,when find the kingate deal by the another model
+#the rule isn't in the two model,the kingate deal by the first model
+first deny
+model deny
+#the following rule is deny
+{ manage * !127.0.0.1 * }  {* * * * *}  
+#this mean deny the source ip is not 127.0.0.1 to access the manage in all time.
+#other deny rule
+model allow
+#the following rule is allow
+{ * * * * } #this mean to allow all source ip to access all destination ip.
+#{ * all * * } #this mean allow all login user to access the kingate
+#other allow rule
+the rule format£º
+{ [!]service [!]group [!]src_ip[/src_mask]  [!]dst_ip[/dst_mask][:dst_port] } { time format }
+* mean every¡£
+! mean not£¬For example the service is  !http mean all service expect the http.
+Alert ! and * don't use together¡£
+service can write as name :http,socks,ftp,....
+service can write as port too: 8082,1082,...
+group mean the kingate group.
+* mean every one include kingate user and not kingate user.
+all mean every login kingate user.
+src_ip mean the source ip,If it finnaly with "." mean a net¡£"*" mean all source ip.
+src_mask mean source mask,when the src_ip is a net you can use the src_mask  .If the src_ip not a net ,the src_mask don't need to write.
+dst_ip mean the destination ip,format as the src_ip¡£
+dst_mask format as the src_mask.
+dst_port mean the destination port ,If you are not write the dst_port ,it mean all destination port¡£
+alert£ºsrc_mask,dst_mask,dst_port can't use together as the revers char "!".
+time format
+min hour mday month wday
+the format as same as crontab(use man crontab to look for detail).
+For example the time is :
+* 8-10 * * 6,0
+mean in sunday and Saturday  from 8 to 10 hour.
+
+The following is example config
+1 anonymous proxy(default by kingate)
+etc/access.conf file content is£º
+first deny
+model deny
+{ manage * !127.0.0.1 * }
+model allow
+{ * * * * }
+2 auth with user(please chanage the kingate root password)
+etc/access.conf file content is£º
+first deny
+model deny
+model allow
+{ * all * * }
+{ manage * * * }

@@ -1,0 +1,67 @@
+		kingate代理服务器说明
+kingate代理服务器，受GPL协议保护，官方站点：http://sourceforge.net/projects/kingate/。
+支持http,https,socks,ftp,pop3,smtp,dns,telnet代理。
+客户端的设置及用法同wingate一样，可以上网查一下资料。
+配置文件conf/kingate.conf 具体意思，配置文件有说明。
+
+1:下载.
+http://sourceforge.net/projects/kingate/
+
+如果你是windows版本请看第8项.
+2：解压
+tar xzf kingate-xxxxx.tar.gz
+cd kingate
+
+3：安装
+./configure --prefix=安装目录
+如:./configure --prefix=/tmp/kingate
+make install
+
+4：使用
+prefix/bin/kingate			启动kingate
+prefix/bin/kingate -f			强行启动kingate，如果启动kingate提示有一个在运行，而你又确实kingate没有运行，可以使用这个。
+prefix/bin/kingate -h			查看kingate用法
+prefix/bin/kingate -q			关闭kingate
+prefix/bin/kingate -v			查看kingate版本
+prefix/bin/kingate -d #			以调试方式运行程序。#为调试级别,(0-3)。数字越高显示信息也越多。
+
+
+5：配置
+kingate配置文件是etc/kingate.conf，打开这个文件，里面有详细的说明及用法.
+
+6:关于Bug
+请访问：http://sourceforge.net/tracker/?group_id=54802&atid=474891,说明bug的现象，及重现办法，以及kingate的版本号。注意，如果kingate在退出时产生了core文件，这很好，
+使用:
+gdb prefix/bin/kingate core文件
+再输入：bt
+把显示的信息也帖上去.
+
+7:关于dnsproxy
+专门代理dns服务请求,请用root用户指行此程序.
+
+8.windows用户
+	解压：
+	使用winzip或winrar之类的解压工具。
+
+	安装
+	c:\>prefix\bin\kingate --install
+	c:\>prefix\bin\kingate -z
+	
+	反安装
+	c:\>prefix\bin\kingate --uninstall
+
+	启动kingate代理
+	c:\>net start kingate
+
+	停止kingate代理
+	c:\>net stop kingate
+	
+	启动dns代理：
+	c:\>prefix\bin\dnsproxy.exe -h use_dns_host -b bindaddr -m max_thread
+
+9.kingate教程
+请看doc/manual.zh文件
+
+
+有任何问题请访问(http://sourceforge.net/projects/kingate/)
+
